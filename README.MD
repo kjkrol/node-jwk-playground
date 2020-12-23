@@ -35,7 +35,7 @@ When server is up and running
     curl -X GET "http://localhost:3344/keys-priv" | jq
 ```
 ## The example of Signing And Verification with RSA keys where keys are feteched from remote location
-Precodition: [jwks-server](#rsa-key-provider-over-http) has to be up and runnig.
+Precodition: [jwks-server](#provides-rsa-keys-over-http) has to be up and runnig.
 
 In this scenario the client app:
 - fetchs private RSA key using HTTP client (axios)
@@ -54,7 +54,7 @@ In this scenario we are:
 - encrypting result of previos operation using private keys.
 - printing result
 
-Both keys are fetched from [jwks-server](#rsa-key-provider-over-http)
+Both keys are fetched from [jwks-server](#provides-rsa-keys-over-http)
 
 To run scenario execute the command:
 ```bash
