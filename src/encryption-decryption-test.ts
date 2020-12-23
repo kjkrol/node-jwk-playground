@@ -1,4 +1,4 @@
-import { publicEncrypt, privateDecrypt, constants } from "crypto";
+import  { Crypt } from "hybrid-crypto-js";
 import axios from "axios";
 import { Secret } from "jsonwebtoken";
 import jwkToPem from "jwk-to-pem";
@@ -11,7 +11,14 @@ const fetchKey = async (url: string, kid: string) => {
   const data = await axios.get(url).then((res) => res.data);
   return data.keys.find((element) => element.kid == kid);
 };
-
+const crypt = new Crypt({
+  // Default AES standard is AES-CBC. Options are:
+  // AES-ECB, AES-CBC, AES-CFB, AES-OFB, AES-CTR, AES-GCM, 3DES-ECB, 3DES-CBC, DES-ECB, DES-CBC
+  aesStandard: 'AES-CBC',
+  // Default RSA standard is RSA-OAEP. Options are:
+  // RSA-OAEP, RSAES-PKCS1-V1_5
+  rsaStandard: 'RSA-OAEP',
+});
 const client = JwksRsa({
   cache: true, // Default Value
   cacheMaxEntries: 5, // Default value
@@ -19,32 +26,18 @@ const client = JwksRsa({
   jwksUri: url,
 });
 
-const encrypt = async (payload: object): Promise<Buffer> => {
+const myEncrypt = async (payload: object): Promise<string> => {
   const signingKey = await client.getSigningKeyAsync(kid);
   const publicKey = signingKey.getPublicKey();
-  const buffer = Buffer.from(JSON.stringify(payload));
-  return publicEncrypt(
-    {
-      key: publicKey,
-      padding: constants.RSA_PKCS1_OAEP_PADDING,
-      oaepHash: "sha256",
-    },
-    buffer
-  );
+  const message = JSON.stringify(payload);
+  return crypt.encrypt(publicKey, message);
 };
 
-const decrypt = async (encryptedData: Buffer): Promise<string> => {
+const myDecrypt = async (encryptedData: string): Promise<string> => {
   const privateJwk: Secret = await fetchKey(`${url}-priv`, kid);
   const privateKey = jwkToPem(privateJwk, { private: true });
-  const decryptedData = privateDecrypt(
-    {
-      key: privateKey,
-      padding: constants.RSA_PKCS1_OAEP_PADDING,
-      oaepHash: "sha256",
-    },
-    encryptedData
-  );
-  return JSON.parse(decryptedData.toString());
+  const decryptedData = crypt.decrypt(privateKey, encryptedData);
+  return decryptedData.message;
 };
 
 const payload = {
@@ -52,7 +45,7 @@ const payload = {
   resources: "mycode",
 };
 console.log("oryginal data: ", payload);
-const encryptedData: Buffer = await encrypt(payload);
-console.log("encypted data: ", encryptedData.toString("base64"));
-const decrypted = await decrypt(encryptedData);
+const encryptedData: string = await myEncrypt(payload);
+console.log("encypted data: ", encryptedData);
+const decrypted = await myDecrypt(encryptedData);
 console.log("decrypted data: ", decrypted);

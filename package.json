@@ -15,8 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.0",
-    "crypto": "^1.0.1",
     "fs": "0.0.1-security",
+    "hybrid-crypto-js": "^0.2.4",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.4",
     "jwks-rsa": "^1.12.0",
@@ -25,11 +25,11 @@
   "devDependencies": {
     "@types/jwk-to-pem": "^2.0.0",
     "@types/node": "^14.14.14",
-    "typescript": "^4.1.3",
-    "ts-loader": "^8.0.12",
-    "tslint": "^6.1.3",
     "express": "^4.17.1",
-    "ts-node": "^9.1.1"
+    "ts-loader": "^8.0.12",
+    "ts-node": "^9.1.1",
+    "tslint": "^6.1.3",
+    "typescript": "^4.1.3"
   },
   "type": "module"
 }
