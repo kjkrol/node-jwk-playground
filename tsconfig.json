@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    // "module": "commonjs",
+    "module": "ESNext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "preserveConstEnums": true,
+    // "strict": true,
+    "target": "es2017",
+    "outDir": "dist",
+  },
+  "include": ["src/**/*.ts", "src/**/*.js"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}
